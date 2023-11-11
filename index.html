@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OfsTool</title>
+    <style type="text/css">
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0px;
+            padding: 0px;
+            white-space: nowrap;
+            overflow: hidden;
+            font-family: sans-serif;
+            color: white;
+            background-image: linear-gradient(to bottom right, #303030, #505050);
+            background-color: #303030;
+        }
+        textarea {
+            background-color: rgba(10, 10, 10, 0.2);
+            border: 1px solid transparent;
+            /*border: 1px solid rgba(110, 110, 110, 0.2);*/
+            color:  white;
+            border-radius: 5px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            padding: 5px;
+            white-space: nowrap;
+        }
+        select {
+            background-color: rgba(110, 110, 110, 0.5);
+            border: 1px solid transparent;
+            /*border: 1px solid rgba(110, 110, 110, 0.5);*/
+            color:  white;
+            border-radius: 5px;
+        }
+
+        input {
+        	padding-top: 3px;
+        	/*font-size: 14px;*/
+        }
+
+        input[type=text] {
+            background-color: rgba(110, 110, 110, 0.5);
+            border: 1px solid transparent;
+            /*border: 1px solid rgba(110, 110, 110, 0.5);*/
+            color:  white;
+            border-radius: 5px;
+        }
+        input[type=button] {
+            background-color: rgba(200, 200, 200, 0.5);
+            border: 1px solid transparent;
+            color: #404040;
+            color: white;
+            border-radius: 5px;
+        }
+        input[type=button]:hover {
+            background-color: rgba(200, 200, 200, 0.75);
+            border: 1px solid transparent;
+            color: #404040;
+            color: white;
+            border-radius: 5px;
+        }
+        input[type=button]:active {
+            background-color: rgba(200, 200, 200, 1);
+            border: 1px solid transparent;
+            color: #404040;
+            color: black;
+            border-radius: 5px;
+        }
+        
+        input[type=password] {
+            background-color: rgba(110, 110, 110, 0.5);
+            border: 1px solid transparent;
+            /*border: 1px solid rgba(110, 110, 110, 0.5);*/
+            color:  white;
+            border-radius: 5px;
+        }
+        input::file-selector-button {
+            background-color: rgba(200, 200, 200, 0.5);
+            border: 1px solid transparent;
+            color: #404040;
+            color: white;
+            border-radius: 5px;
+        }
+        textarea:focus, input:focus{
+		    outline: none;
+		}
+    </style>
+</head>
+<body>
+    <center>
+    
+    <div style="margin: 10px;">
+        <a style="font-size: 30px; color: white;"><b>OFS Generator</b></a>
+    </div>
+    
+    <div style="margin: 10px; border: 0px solid grey; padding: 5px; border-radius: 10px;">
+        
+        <br><input type="file" id="inputcsv" style="width: 970px" />
+        <input type="button" onclick="loadCsv('inputcsv', 'csvcontent')" value="Load" style="width: 215px">
+        
+        <br><textarea id="csvcontent" style="width: 800px; height: 190px; white-space: nowrap; resize: none;" spellcheck="false"></textarea>
+        
+        <table style="display: inline-block;">
+            <tr><td>Version</td><td><input type="text" id="versionid"/></td></tr>
+            <tr><td>Function</td><td><input type="text" id="functionid"/></td></tr>
+            <tr><td>PROCESS/VALIDATE</td><td><select id="processid" style="width: 100%; padding: 3px;"><option value="PROCESS">Process</option><option value="VALIDATE">Validate</option></select></td></tr>
+            <tr><td>GTS Control</td><td><input type="text" id="gtscontrolid" value="1"/></td></tr>
+            <tr><td>Number Of Auth</td><td><input type="text" id="numberofauthid" value="0"/></td></tr>
+            <tr><td>User Name</td><td><input type="text" id="usernameid" value="INPUTT"/></td></tr>
+            <tr><td>Password</td><td><input type="password" id="passwordid"/></td><td><input type="button" onmousedown="document.getElementById('passwordid').type='text'" onmouseup="document.getElementById('passwordid').type='password'" value="View"></td></tr>
+            <tr><td>Company</td><td><input type="text" id="companyid" value="GB0010001"/></td></tr>
+        </table>
+        
+        <br><input type="button" value="Generate Ofs" onclick="generateOfs('versionid', 'functionid', 'processid', 'gtscontrolid', 'numberofauthid', 'usernameid', 'passwordid', 'companyid', 'csvcontent', 'outputid')" style="width: 1185px; font-size: 15px; margin-top: 10px; margin-bottom: 10px;">
+        
+        <br><textarea id="outputid" style="width: 1185px; height: 190px; resize: none;" spellcheck="false"></textarea>
+		
+		<br><input type="button" onclick="downloadCsvSample('outputid', 'OFS_OutputStrings.txt');" value="Download Output" style="width: 1185px; font-size: 15px; margin-top: 10px; margin-bottom: 10px;"/>
+		
+		<br><input type="button" onclick="downloadCsvSample('sampledata', 'OFS_SampleInput.csv');" value="Download Sample Input Csv File" style="width: 1185px; font-size: 15px; margin-top: 10px; margin-bottom: 10px;"/>
+
+<textarea id="sampledata" style="display: none;">ID,MV,SV,FIELD1,FIELD2,FIELD3
+REC_ID_01,1,1,Text1,ACTION11,ACTION11
+,2,2,,ACTION22,
+,2,1,,ACTION21,ACTION21
+,3,1,,ACTION31,
+,1,1,Text1,ACTION,ACTION
+,1,1,Text1,ACTION,ACTION
+REC_ID_02,1,1,Text1,ACTION,ACTION
+REC_ID_03,1,1,Text1,ACTION,ACTION
+REC_ID_04,1,1,Text1,ACTION,ACTION
+REC_ID_05,1,1,Text1,ACTION,ACTION</textarea>
+
+    </div>
+    </center>
+    <script type="text/javascript">
+    	function downloadCsvSample(sampleDataElement, outFileName) {
+    		// var outFileName = 'OFS_SampleInput.csv';
+    		var sampleText = document.getElementById(sampleDataElement).value;
+    		
+    		//create or obtain the file's content
+		    var content = sampleText;
+		  
+		    //create a file and put the content, name and type
+		    var file = new File(["\ufeff"+content], outFileName, {type: "text/plain:charset=UTF-8"});
+		  
+		    //create a ObjectURL in order to download the created file
+		    url = window.URL.createObjectURL(file);
+		  
+		    //create a hidden link and set the href and click it
+		    var a = document.createElement("a");
+		    a.style = "display: none";
+		    a.href = url;
+		    a.download = file.name;
+		    a.click();
+		    window.URL.revokeObjectURL(url);
+		}
+
+        function loadCsv(inp, out) {
+            var file = document.getElementById(inp).files[0];
+
+            if (file.name.split('.')[file.name.split('.').length - 1].toLowerCase() == 'csv') {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    var content = e.target.result; // The file's text content
+                    document.getElementById('csvcontent').value = content; // Set the content to the textarea
+                }
+
+                reader.readAsText(file); // Read the file as text
+            } else {
+                alert("Please select a csv file.");
+            }
+        }
+
+        function generateOfs(ver, func, pro, gts, authno, usrname, passwd, comp, csvcont, out) {
+            // Get Values from the Frontend
+            var versionName = document.getElementById(ver).value;
+            var functionName = document.getElementById(func).value;
+            var processName = document.getElementById(pro).value;
+            var gtsControlName = document.getElementById(gts).value;
+            var noOfAuthName = document.getElementById(authno).value;
+            var userName = document.getElementById(usrname).value;
+            var passwordName = document.getElementById(passwd).value;
+            var companyName = document.getElementById(comp).value;
+            var csvContent = document.getElementById(csvcont).value;
+
+            var outputElement = document.getElementById(out);
+
+            // If content is not loaded then prompt error and exit
+            if (csvContent.replace(/,/g, '').trim() == '') {alert('ERROR: Please Load Csv Data To Generate The OFS String'); return;}
+
+            // If only header is found then prompt error and exit
+            if (csvContent.replace(/,/g, '').trim().split('\n').length <= 1) {alert('ERROR: Only Header Found. Please Load Data As Well'); return;}
+
+            var linesArray = csvContent.split('\n');
+            var validCsvContent = '';
+            var headerFlag = true;
+            
+            // extract the header and body content
+            for (let l=0; l<linesArray.length; l++) {
+                var currentLine = linesArray[l];
+                if (currentLine.replace(/,/g, '').trim() != '') {
+                    if (headerFlag == false) {
+                        var validCsvContent = validCsvContent + currentLine + '\n';
+                    } else {
+                        var header = currentLine;
+                        var headerFlag = false;
+                    }
+                }
+            }
+
+            // remove the leading and trailing ","
+            var validHeader = header.replace(/,/g, '\n').trim().replace(/\n/g, ',');
+            
+            // extract the ID, VM and SM column indexes
+            // for (let h=0; h<validHeader.split(','); h++) {
+            //     if (validHeader.split(',')[h].trim().toUpperCase() == 'ID') {
+            //         var headerIdPos = h;
+            //     }
+            //     if (validHeader.split(',')[h].trim().toUpperCase() == 'SM') {
+            //         var headerSmPos = h;
+            //     }
+            //     if (validHeader.split(',')[h].trim().toUpperCase() == 'VM') {
+            //         var headerVmPos = h;
+            //     }
+            // }
+
+            var headerPosExtraction = ',' + validHeader + ','
+
+            if (headerPosExtraction.toUpperCase().indexOf(',ID,') <= -1) {alert('ERROR: Missing "ID" Record Id Column'); return;}
+            if (headerPosExtraction.toUpperCase().indexOf(',MV,') <= -1) {alert('ERROR: Missing "MV" Multi-Value Column'); return;}
+            if (headerPosExtraction.toUpperCase().indexOf(',SV,') <= -1) {alert('ERROR: Missing "SV" Sub-Value Column'); return;}
+
+            var headerIdPos = headerPosExtraction.toUpperCase().split(',ID,')[0].split(',').length - 1
+            var headerVmPos = headerPosExtraction.toUpperCase().split(',MV,')[0].split(',').length - 1
+            var headerSmPos = headerPosExtraction.toUpperCase().split(',SV,')[0].split(',').length - 1
+
+            console.log('ID.POS: '+headerIdPos)
+            console.log('VM.POS: '+headerVmPos)
+            console.log('SM.POS: '+headerSmPos)
+
+            var ofsString = '';
+            // Iterate through the lines
+            for (let l=0; l<validCsvContent.split('\n').length; l++) {
+                var currentValidCsvLine = validCsvContent.split('\n')[l];
+                try {
+                    var idString = currentValidCsvLine.split(',')[headerIdPos];
+                } catch(Exception) {
+                    var idString = '';
+                }
+                try {
+                    var vmString = currentValidCsvLine.split(',')[headerVmPos];
+                } catch(Exception) {
+                    var vmString = '1';
+                }
+                try {
+                    var smString = currentValidCsvLine.split(',')[headerSmPos];
+                } catch(Exception) {
+                    var smString = '1';
+                }
+
+                // if id is null that means the field belongs to the previous id
+            	var fieldsString = '';
+
+                // Iterate through the fields to form the OFS body
+                for (let b=0; b<currentValidCsvLine.split(',').length; b++) {
+                    if (currentValidCsvLine.split(',')[b] != '' && validHeader.split(',')[b] != '') {
+                        if (b != headerIdPos && b != headerVmPos && b != headerSmPos) {
+                            try {
+                                var fieldsString = fieldsString + ',' + validHeader.split(',')[b] + ':' + vmString + ':' + smString + '=' + '"' + currentValidCsvLine.split(',')[b] + '"';
+                            } catch(Exception) {
+    
+                            }
+                        }
+                    }
+                }
+
+                if (fieldsString != '') {
+                    if(vmString == '1' && smString == '1') {
+                        var ofsString = ofsString + '\n' + versionName + '/' + functionName + '/' + processName + '/' + gtsControlName + '/' + noOfAuthName + ',' + userName + '/' + passwordName + '/' + companyName + ',' + idString + fieldsString
+                    } else {
+                        var ofsString = ofsString + fieldsString;
+                    }
+                }
+
+                // if(idString != '') {var previousIdString = idString;}
+            }
+
+            // console.log('HEADER:');
+            // console.log(header);
+            // console.log('VALID HEADER:');
+            // console.log(validHeader);
+            // console.log('VALID CSV:');
+            // console.log(validCsvContent);
+
+            outputElement.value = ofsString;
+
+        }
+    </script>
+</body>
+</html>
